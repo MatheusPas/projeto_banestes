@@ -1,9 +1,12 @@
 import React from 'react'
+import ClientesList from './components/ListaClientes/ClientLista'
 
 const App = () => {
   return (
     <div>  
-        
+      <ClientesList>
+
+      </ClientesList>
     </div>
   )
 }
