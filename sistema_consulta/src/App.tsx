@@ -1,4 +1,3 @@
-import React from 'react'
 import ClientesList from './components/ListaClientes/ClientLista'
 
 const App = () => {

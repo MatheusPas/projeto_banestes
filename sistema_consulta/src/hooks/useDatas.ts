@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import GoogleSheetsService from '../services/api';
 import type { Cliente, Conta, Agencia } from '../types';
 
