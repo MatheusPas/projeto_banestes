@@ -1,119 +1,60 @@
-import React from "react";
-import type { Cliente } from "../../types";
+import React, { useState, useCallback } from "react";
 
 interface ClientFiltroProps {
-  clientes: Cliente[];
-  onFiltroChange: (clientesFiltrados: Cliente[]) => void;
+  onFiltroChange: (search: string) => void;
+  loading?: boolean;
 }
 
-const ClientFiltro: React.FC<ClientFiltroProps> = ({ clientes, onFiltroChange }) => {
-  const [filtros, setFiltros] = React.useState({
-    nome: '',
-    estadoCivil: '',
-    agencia: ''
-  });
+const ClientFiltro: React.FC<ClientFiltroProps> = ({ onFiltroChange, loading = false }) => {
+  const [search, setSearch] = useState('');
 
-  React.useEffect(() => {
-    let clientesFiltrados = [...clientes];
-
-    // Filtro por nome
-    if (filtros.nome) {
-      clientesFiltrados = clientesFiltrados.filter(cliente =>
-        cliente.nome.toLowerCase().includes(filtros.nome.toLowerCase()) ||
-        cliente.email.toLowerCase().includes(filtros.nome.toLowerCase())
-      );
-    }
-
-    // Filtro por estado civil
-    if (filtros.estadoCivil) {
-      clientesFiltrados = clientesFiltrados.filter(cliente =>
-        cliente.estadoCivil === filtros.estadoCivil
-      );
-    }
-
-    // Filtro por agência
-    if (filtros.agencia) {
-      clientesFiltrados = clientesFiltrados.filter(cliente =>
-        cliente.codigoAgencia.toString().includes(filtros.agencia)
-      );
-    }
-
-    onFiltroChange(clientesFiltrados);
-  }, [filtros, clientes, onFiltroChange]);
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value);
+    onFiltroChange(value);
+  }, [onFiltroChange]);
 
   const limparFiltros = () => {
-    setFiltros({ nome: '', estadoCivil: '', agencia: '' });
+    handleSearchChange('');
   };
 
-  const estadosCivis = ['Solteiro', 'Casado', 'Viúvo', 'Divorciado'];
-  const agenciasUnicas = [...new Set(clientes.map(c => c.codigoAgencia))].sort((a, b) => a - b);
-
   return (
-    <div className="bg-gray-50 p-5 rounded-xl border-2 border-blue-100 mb-5">
-      <h3 className="text-blue-800 m-0 mb-4 flex items-center gap-2">
-        🔍 Filtros de Pesquisa
-      </h3>
+    <section className="bg-gray-50 p-5 rounded-xl border-2 border-blue-100 mb-5">
+      <h2 className="text-blue-800 m-0 mb-4 text-xl font-bold">
+        Buscar Clientes
+      </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-        {/* Filtro por Nome/Email */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
         <div>
-          <label className="block mb-1 font-bold text-blue-500 text-sm">
-            Nome ou Email:
+          <label 
+            htmlFor="search-input"
+            className="block mb-2 font-bold text-blue-500 text-sm"
+          >
+            Nome ou CPF/CNPJ:
           </label>
           <input
+            id="search-input"
             type="text"
-            value={filtros.nome}
-            onChange={(e) => setFiltros(prev => ({ ...prev, nome: e.target.value }))}
-            placeholder="Digite o nome ou email..."
-            className="w-full p-2 border-2 border-blue-100 rounded-md text-sm outline-none transition-colors focus:border-blue-500"
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            placeholder="Digite o nome ou CPF/CNPJ do cliente..."
+            disabled={loading}
+            className="w-full p-3 border-2 border-blue-100 rounded-md text-sm outline-none transition-colors focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            aria-describedby="search-description"
           />
         </div>
 
-        {/* Filtro por Estado Civil */}
-        <div>
-          <label className="block mb-1 font-bold text-blue-500 text-sm">
-            Estado Civil:
-          </label>
-          <select
-            value={filtros.estadoCivil}
-            onChange={(e) => setFiltros(prev => ({ ...prev, estadoCivil: e.target.value }))}
-            className="w-full p-2 border-2 border-blue-100 rounded-md text-sm outline-none bg-white"
-          >
-            <option value="">Todos</option>
-            {estadosCivis.map(estado => (
-              <option key={estado} value={estado}>{estado}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Filtro por Agência */}
-        <div>
-          <label className="block mb-1 font-bold text-blue-500 text-sm">
-            Agência:
-          </label>
-          <select
-            value={filtros.agencia}
-            onChange={(e) => setFiltros(prev => ({ ...prev, agencia: e.target.value }))}
-            className="w-full p-2 border-2 border-blue-100 rounded-md text-sm outline-none bg-white"
-          >
-            <option value="">Todas</option>
-            {agenciasUnicas.map(agencia => (
-              <option key={agencia} value={agencia}>Agência {agencia}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Botão Limpar */}
         <div>
           <button
             onClick={limparFiltros}
-            className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white border-none rounded-md cursor-pointer text-sm font-bold transition-colors"
+            disabled={loading || !search}
+            className="w-full px-4 py-3.5 bg-green-500 hover:bg-green-600 text-white border-none rounded-md cursor-pointer text-sm font-bold transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-green-400"
+            aria-label="Limpar filtros de busca"
           >
-            🗑️ Limpar Filtros
+            Limpar Busca
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
