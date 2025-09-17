@@ -62,7 +62,7 @@ const Paginacao: React.FC<PaginacaoProps> = ({
   };
 
   return (
-    <nav className="bg-gray-50 p-5 rounded-xl border-2 border-blue-100 mt-5" aria-label="Navegação entre páginas">
+    <nav className="bg-gray-50 p-5 rounded-xl border-2 border-blue-100 mt-5 mb-5" aria-label="Navegação entre páginas">
       <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
         <p className="text-gray-600 text-sm">
           Mostrando {inicioItem} até {fimItem} de {totalItens} clientes
