@@ -20,7 +20,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onSelectCliente }) => 
 
   return (
     <article 
-      className="border-2 border-blue-100 rounded-xl p-4 bg-white shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-blue-400 transition-all duration-300 min-h-[280px] flex flex-col justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="border-2 border-blue-100 rounded-xl p-4 bg-white shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-blue-900 transition-all duration-300 min-h-[280px] flex flex-col justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
       onClick={handleCardClick}
       onKeyDown={handleKeyPress}
       tabIndex={0}
@@ -28,7 +28,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onSelectCliente }) => 
       aria-label={`Ver detalhes do cliente ${cliente.nome}`}
     >
       {/* Header do Card */}
-      <header className="border-b-2 border-green-500 pb-3 mb-3">
+      <header className="border-b-2 border-green-700 pb-3 mb-3">
         <h3 className="text-blue-800 text-lg font-bold m-0 line-clamp-2">
           {cliente.nome}
         </h3>
@@ -40,7 +40,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onSelectCliente }) => 
       {/* Informações essenciais */}
       <div className="flex-1 space-y-2">
         <div>
-          <span className="font-bold text-blue-500 text-xs block">
+          <span className="font-bold text-blue-700 text-xs block">
             Email:
           </span>
           <p className="text-xs mt-1 m-0 break-words line-clamp-2">
@@ -49,7 +49,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onSelectCliente }) => 
         </div>
 
         <div>
-          <span className="font-bold text-blue-500 text-xs block">
+          <span className="font-bold text-blue-700 text-xs block">
             CPF/CNPJ:
           </span>
           <p className="text-xs mt-1 m-0">
@@ -58,7 +58,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onSelectCliente }) => 
         </div>
 
         <div>
-          <span className="font-bold text-blue-500 text-xs block">
+          <span className="font-bold text-blue-700 text-xs block">
             Agência:
           </span>
           <p className="text-xs mt-1 m-0">
@@ -72,7 +72,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onSelectCliente }) => 
         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold">
           {cliente.estadoCivil}
         </span>
-        <span className="text-blue-500 text-xs font-bold" aria-hidden="true">
+        <span className="text-blue-700 text-xs font-bold" aria-hidden="true">
           Ver detalhes →
         </span>
       </footer>

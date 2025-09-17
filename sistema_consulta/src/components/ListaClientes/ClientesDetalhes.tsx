@@ -52,7 +52,7 @@ const ClienteDetalhes: React.FC<ClienteDetalhesProps> = ({ cliente, onVoltar }) 
       <div className="mb-6">
         <button
           onClick={onVoltar}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white rounded-lg font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
           aria-label="Voltar para lista de clientes"
         >
           ← Voltar à Lista
@@ -61,7 +61,7 @@ const ClienteDetalhes: React.FC<ClienteDetalhesProps> = ({ cliente, onVoltar }) 
 
       {/* Informações do Cliente */}
       <section className="bg-white rounded-xl border-2 border-blue-100 p-6 mb-6 shadow-md">
-        <header className="border-b-2 border-blue-500 pb-4 mb-6">
+        <header className="border-b-2 border-blue-700 pb-4 mb-6">
           <h1 className="text-blue-800 text-3xl font-bold">
             {cliente.nome}
           </h1>
@@ -77,29 +77,29 @@ const ClienteDetalhes: React.FC<ClienteDetalhesProps> = ({ cliente, onVoltar }) 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="space-y-4">
-            <h2 className="text-blue-700 font-bold text-lg border-b border-blue-200 pb-2">
+            <h2 className="text-blue-800 font-bold text-lg border-b border-blue-200 pb-2">
               Dados Pessoais
             </h2>
             
             <div>
-              <span className="font-bold text-blue-500 text-sm block">CPF/CNPJ:</span>
+              <span className="font-bold text-blue-700 text-sm block">CPF/CNPJ:</span>
               <p className="text-gray-800">{formatarCPF(cliente.cpfCnpj)}</p>
             </div>
 
             {cliente.rg && (
               <div>
-                <span className="font-bold text-blue-500 text-sm block">RG:</span>
+                <span className="font-bold text-blue-700 text-sm block">RG:</span>
                 <p className="text-gray-800">{cliente.rg}</p>
               </div>
             )}
 
             <div>
-              <span className="font-bold text-blue-500 text-sm block">Data de Nascimento:</span>
+              <span className="font-bold text-blue-700 text-sm block">Data de Nascimento:</span>
               <p className="text-gray-800">{cliente.dataNascimento.toLocaleDateString('pt-BR')}</p>
             </div>
 
             <div>
-              <span className="font-bold text-blue-500 text-sm block">Estado Civil:</span>
+              <span className="font-bold text-blue-700 text-sm block">Estado Civil:</span>
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">
                 {cliente.estadoCivil}
               </span>
@@ -107,19 +107,19 @@ const ClienteDetalhes: React.FC<ClienteDetalhesProps> = ({ cliente, onVoltar }) 
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-blue-700 font-bold text-lg border-b border-blue-200 pb-2">
+            <h2 className="text-blue-800 font-bold text-lg border-b border-blue-200 pb-2">
               Contato
             </h2>
             
             <div>
-              <span className="font-bold text-blue-500 text-sm block">Email:</span>
+              <span className="font-bold text-blue-700 text-sm block">Email:</span>
               <p className="text-gray-800 break-words">
                 {cliente.email || 'Não informado'}
               </p>
             </div>
 
             <div>
-              <span className="font-bold text-blue-500 text-sm block">Endereço:</span>
+              <span className="font-bold text-blue-700 text-sm block">Endereço:</span>
               <p className="text-gray-800">
                 {cliente.endereco || 'Não informado'}
               </p>
@@ -127,19 +127,19 @@ const ClienteDetalhes: React.FC<ClienteDetalhesProps> = ({ cliente, onVoltar }) 
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-blue-700 font-bold text-lg border-b border-blue-200 pb-2">
+            <h2 className="text-blue-800 font-bold text-lg border-b border-blue-200 pb-2">
               Informações Financeiras
             </h2>
             
             <div>
-              <span className="font-bold text-blue-500 text-sm block">Renda Anual:</span>
+              <span className="font-bold text-blue-700 text-sm block">Renda Anual:</span>
               <p className="text-green-600 font-bold text-lg">
                 {formatarMoeda(cliente.rendaAnual)}
               </p>
             </div>
 
             <div>
-              <span className="font-bold text-blue-500 text-sm block">Patrimônio:</span>
+              <span className="font-bold text-blue-700 text-sm block">Patrimônio:</span>
               <p className="text-green-600 font-bold text-lg">
                 {formatarMoeda(cliente.patrimonio)}
               </p>
