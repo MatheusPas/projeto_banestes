@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useClientes } from "../../hooks/useDatas";
 import type { Cliente } from "../../types";
 import ClientCard from "./ClientCard";
@@ -31,28 +31,41 @@ const ClientesList: React.FC = () => {
     carregarDadosIniciais();
   }, [carregarClientes]);
 
-  // Filtrar e paginar clientes
+  // Filtrar e paginar clientes - agora com dependências corretas
   const dadosPaginados = useMemo(() => {
+    if (todosClientes.length === 0) {
+      return {
+        clientes: [],
+        total: 0,
+        totalPages: 0,
+        paginaAtual: 1,
+        itensPorPagina: 10
+      };
+    }
+    
     return filtrarClientes(todosClientes, searchTerm, paginaAtual, 10);
   }, [todosClientes, searchTerm, paginaAtual, filtrarClientes]);
 
   // Handlers
-  const handleFiltroChange = (search: string) => {
+  const handleFiltroChange = useCallback((search: string) => {
     setSearchTerm(search);
     setPaginaAtual(1); // Reset para primeira página
-  };
+  }, []);
 
-  const handleMudarPagina = (pagina: number) => {
+  const handleMudarPagina = useCallback((pagina: number) => {
     setPaginaAtual(pagina);
-  };
+  }, []);
 
-  const handleSelectCliente = (cliente: Cliente) => {
+  const handleSelectCliente = useCallback((cliente: Cliente) => {
     setClienteSelecionado(cliente);
-  };
+    // Limpar campo de busca para evitar bugs ao voltar
+    setSearchTerm('');
+    setPaginaAtual(1);
+  }, []);
 
-  const handleVoltar = () => {
+  const handleVoltar = useCallback(() => {
     setClienteSelecionado(null);
-  };
+  }, []);
 
   // Se um cliente está selecionado, mostrar detalhes
   if (clienteSelecionado) {
@@ -121,14 +134,16 @@ const ClientesList: React.FC = () => {
       />
 
       {/* Paginação superior */}
-      <Paginacao
-        paginaAtual={paginaAtual}
-        totalPaginas={dadosPaginados.totalPages}
-        onMudarPagina={handleMudarPagina}
-        totalItens={dadosPaginados.total}
-        itensPorPagina={10}
-        loading={loading}
-      />
+      {dadosPaginados.totalPages > 1 && (
+        <Paginacao
+          paginaAtual={paginaAtual}
+          totalPaginas={dadosPaginados.totalPages}
+          onMudarPagina={handleMudarPagina}
+          totalItens={dadosPaginados.total}
+          itensPorPagina={10}
+          loading={loading}
+        />
+      )}
 
       {/* Lista de clientes */}
       <main>
@@ -170,14 +185,16 @@ const ClientesList: React.FC = () => {
       </main>
 
       {/* Paginação inferior */}
-      <Paginacao
-        paginaAtual={paginaAtual}
-        totalPaginas={dadosPaginados.totalPages}
-        onMudarPagina={handleMudarPagina}
-        totalItens={dadosPaginados.total}
-        itensPorPagina={10}
-        loading={loading}
-      />
+      {dadosPaginados.totalPages > 1 && (
+        <Paginacao
+          paginaAtual={paginaAtual}
+          totalPaginas={dadosPaginados.totalPages}
+          onMudarPagina={handleMudarPagina}
+          totalItens={dadosPaginados.total}
+          itensPorPagina={10}
+          loading={loading}
+        />
+      )}
     </div>
   );
 };

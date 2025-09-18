@@ -20,7 +20,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onSelectCliente }) => 
 
   return (
     <article 
-      className="border-2 border-blue-100 rounded-xl p-4 bg-white shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-blue-900 transition-all duration-300 min-h-[280px] flex flex-col justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
+      className="border-2 border-blue-100 rounded-xl p-4 bg-white shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-blue-900 transition-all duration-300 min-h-[320px] flex flex-col justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
       onClick={handleCardClick}
       onKeyDown={handleKeyPress}
       tabIndex={0}
@@ -32,6 +32,11 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onSelectCliente }) => 
         <h3 className="text-blue-800 text-lg font-bold m-0 line-clamp-2">
           {cliente.nome}
         </h3>
+        {cliente.nomeSocial && (
+          <p className="text-blue-600 text-sm mt-1 m-0 italic">
+            Nome Social: {cliente.nomeSocial}
+          </p>
+        )}
         <p className="text-gray-600 text-xs mt-1 m-0">
           ID: {cliente.id}
         </p>
