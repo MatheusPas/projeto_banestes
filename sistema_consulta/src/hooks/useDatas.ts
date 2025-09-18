@@ -22,7 +22,18 @@ export const useClientes = () => {
 
     try {
       const clientes = await googleSheetsService.buscarTodosClientes(); // Chama a API
-      return clientes;
+      
+      // Ordena os clientes em ordem alfabética pelo nome
+      const clientesOrdenados = clientes.sort((a, b) => {
+        const nomeA = (a.nome || '').toLowerCase();
+        const nomeB = (b.nome || '').toLowerCase();
+        return nomeA.localeCompare(nomeB, 'pt-BR', { 
+          sensitivity: 'base',
+          ignorePunctuation: true 
+        });
+      });
+      
+      return clientesOrdenados;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido ao carregar clientes';
       setError(errorMessage); // Define o erro no estado
