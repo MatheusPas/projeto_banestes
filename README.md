@@ -41,7 +41,6 @@ src/
 │   └── useDatas.ts                  # Hooks customizados para gerenciamento de estado
 ├── services/
 │   ├── api.ts                       # Serviço principal da API
-│   └── buscarAPI.ts                 # Serviço legado (deprecated)
 ├── types/
 │   └── index.ts                     # Definições de tipos TypeScript
 ├── App.tsx                          # Componente raiz da aplicação
