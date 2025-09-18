@@ -143,30 +143,6 @@ interface Agencia {
   endereco: string;
 }
 ```
-
-## Instalação e Execução
-
-### Pré-requisitos
-- Node.js 16+ 
-- npm ou yarn
-
-### Passos de instalação
-
-```bash
-# Clone o repositório
-git clone [url-do-repositorio]
-cd sistema-gestao-clientes
-
-# Instale as dependências
-npm install
-
-# Execute em modo desenvolvimento
-npm run dev
-
-# Build para produção
-npm run build
-```
-
 ## Padrões de Design
 
 ### Responsividade
