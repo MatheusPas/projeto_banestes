@@ -7,31 +7,33 @@ import Paginacao from "./Paginacao";
 import ClienteDetalhes from "./ClientesDetalhes";
 
 const ClientesList: React.FC = () => {
-  const [todosClientes, setTodosClientes] = useState<Cliente[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [paginaAtual, setPaginaAtual] = useState(1);
-  const [clienteSelecionado, setClienteSelecionado] = useState<Cliente | null>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
+  // Declaração de estados para gerenciar os dados e interações
+  const [todosClientes, setTodosClientes] = useState<Cliente[]>([]); // Todos os clientes carregados
+  const [searchTerm, setSearchTerm] = useState(''); // Termo de pesquisa para filtrar clientes
+  const [paginaAtual, setPaginaAtual] = useState(1); // Página atual para a paginação
+  const [clienteSelecionado, setClienteSelecionado] = useState<Cliente | null>(null); // Cliente selecionado para exibição de detalhes
+  const [initialLoading, setInitialLoading] = useState(true); // Estado de carregamento inicial
 
+  // Funções fornecidas pelo hook useClientes para carregar e filtrar dados
   const { carregarClientes, filtrarClientes, loading, error } = useClientes();
 
-  // Carregar dados iniciais
+  // Carregar dados iniciais dos clientes assim que o componente é montado
   useEffect(() => {
     const carregarDadosIniciais = async () => {
       try {
-        const clientes = await carregarClientes();
-        setTodosClientes(clientes);
+        const clientes = await carregarClientes(); // Chama a função para carregar os clientes
+        setTodosClientes(clientes); // Atualiza o estado com os clientes carregados
       } catch (error) {
-        console.error('Erro ao carregar clientes:', error);
+        console.error('Erro ao carregar clientes:', error); // Em caso de erro, exibe no console
       } finally {
-        setInitialLoading(false);
+        setInitialLoading(false); // Define que o carregamento inicial foi concluído
       }
     };
 
-    carregarDadosIniciais();
+    carregarDadosIniciais(); // Executa a função de carregamento ao montar o componente
   }, [carregarClientes]);
 
-  // Filtrar e paginar clientes - agora com dependências corretas
+  // Filtragem e paginação dos clientes com base nos dados carregados
   const dadosPaginados = useMemo(() => {
     if (todosClientes.length === 0) {
       return {
@@ -43,41 +45,44 @@ const ClientesList: React.FC = () => {
       };
     }
     
+    // Filtra e pagina os clientes conforme o termo de busca e a página atual
     return filtrarClientes(todosClientes, searchTerm, paginaAtual, 10);
   }, [todosClientes, searchTerm, paginaAtual, filtrarClientes]);
 
-  // Handlers
+  // Função para atualizar o termo de pesquisa e resetar a paginação para a primeira página
   const handleFiltroChange = useCallback((search: string) => {
     setSearchTerm(search);
-    setPaginaAtual(1); // Reset para primeira página
+    setPaginaAtual(1); // Reset para a primeira página após mudança no filtro
   }, []);
 
+  // Função para mudar a página na paginação
   const handleMudarPagina = useCallback((pagina: number) => {
-    setPaginaAtual(pagina);
+    setPaginaAtual(pagina); // Atualiza a página atual
   }, []);
 
+  // Função para selecionar um cliente e exibir seus detalhes
   const handleSelectCliente = useCallback((cliente: Cliente) => {
-    setClienteSelecionado(cliente);
-    // Limpar campo de busca para evitar bugs ao voltar
-    setSearchTerm('');
-    setPaginaAtual(1);
+    setClienteSelecionado(cliente); // Define o cliente selecionado
+    setSearchTerm(''); // Limpa o campo de busca para evitar bugs ao voltar
+    setPaginaAtual(1); // Reseta a paginação para a primeira página
   }, []);
 
+  // Função para voltar à lista de clientes e desmarcar o cliente selecionado
   const handleVoltar = useCallback(() => {
-    setClienteSelecionado(null);
+    setClienteSelecionado(null); // Limpa o cliente selecionado
   }, []);
 
-  // Se um cliente está selecionado, mostrar detalhes
+  // Se um cliente for selecionado, exibe a tela de detalhes desse cliente
   if (clienteSelecionado) {
     return (
       <ClienteDetalhes 
         cliente={clienteSelecionado} 
-        onVoltar={handleVoltar}
+        onVoltar={handleVoltar} // Passa a função de voltar como prop
       />
     );
   }
 
-  // Loading inicial
+  // Exibe um spinner enquanto os dados estão sendo carregados inicialmente
   if (initialLoading) {
     return (
       <div className="p-10 text-center bg-gray-50 min-h-screen flex flex-col justify-center items-center">
@@ -92,7 +97,7 @@ const ClientesList: React.FC = () => {
     );
   }
 
-  // Erro
+  // Exibe uma mensagem de erro caso o carregamento dos dados falhe
   if (error) {
     return (
       <div className="p-10 text-center bg-red-50 border-2 border-red-300 rounded-xl m-5">
@@ -100,10 +105,10 @@ const ClientesList: React.FC = () => {
           Erro ao Carregar Sistema
         </h1>
         <p className="text-red-700 mb-5">
-          {error}
+          {error} {/* Exibe a mensagem de erro */}
         </p>
         <button 
-          onClick={() => window.location.reload()}
+          onClick={() => window.location.reload()} // Botão para recarregar a página
           className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white border-none rounded-lg cursor-pointer text-base font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           Tentar Novamente
@@ -114,7 +119,7 @@ const ClientesList: React.FC = () => {
 
   return (
     <div className="p-5 bg-gray-50 min-h-screen">
-      {/* Header */}
+      {/* Cabeçalho com título e informações sobre o total de clientes */}
       <header className="bg-white p-6 rounded-xl border-2 border-blue-100 mb-5 shadow-md">
         <h1 className="text-blue-800 m-0 text-3xl text-center font-bold">
           Sistema de Gestão de Clientes
@@ -127,13 +132,13 @@ const ClientesList: React.FC = () => {
         </p>
       </header>
 
-      {/* Filtros */}
+      {/* Componente de filtro de clientes */}
       <ClientFiltro 
-        onFiltroChange={handleFiltroChange}
-        loading={loading}
+        onFiltroChange={handleFiltroChange} // Passa a função de filtro como prop
+        loading={loading} // Passa o estado de loading para desabilitar o filtro enquanto carrega
       />
 
-      {/* Paginação superior */}
+      {/* Exibe a paginação superior, se houver mais de uma página */}
       {dadosPaginados.totalPages > 1 && (
         <Paginacao
           paginaAtual={paginaAtual}
@@ -148,6 +153,7 @@ const ClientesList: React.FC = () => {
       {/* Lista de clientes */}
       <main>
         {loading ? (
+          // Exibe um spinner enquanto os dados estão sendo carregados
           <div className="bg-white p-10 rounded-xl border-2 border-blue-100 text-center">
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -155,6 +161,7 @@ const ClientesList: React.FC = () => {
             </div>
           </div>
         ) : dadosPaginados.clientes.length === 0 ? (
+          // Exibe uma mensagem se nenhum cliente for encontrado
           <div className="bg-white p-10 rounded-xl border-2 border-blue-100 text-center">
             <p className="text-gray-600 text-lg m-0">
               {searchTerm 
@@ -163,6 +170,7 @@ const ClientesList: React.FC = () => {
               }
             </p>
             {searchTerm && (
+              // Exibe o botão para limpar a busca
               <button
                 onClick={() => handleFiltroChange('')}
                 className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -172,19 +180,20 @@ const ClientesList: React.FC = () => {
             )}
           </div>
         ) : (
+          // Exibe a lista de clientes se houver resultados
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-white p-5 rounded-xl border-2 border-blue-100 shadow-md">
             {dadosPaginados.clientes.map((cliente) => (
               <ClientCard 
                 key={cliente.id} 
                 cliente={cliente} 
-                onSelectCliente={handleSelectCliente}
+                onSelectCliente={handleSelectCliente} // Passa a função de seleção de cliente
               />
             ))}
           </div>
         )}
       </main>
 
-      {/* Paginação inferior */}
+      {/* Exibe a paginação inferior, se houver mais de uma página */}
       {dadosPaginados.totalPages > 1 && (
         <Paginacao
           paginaAtual={paginaAtual}
