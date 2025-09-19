@@ -2,7 +2,7 @@ import ClientesList from './components/ListaClientes/ClientLista'
 
 const App = () => {
   return (
-    <div>  
+    <div>   
       <ClientesList>
 
       </ClientesList>
