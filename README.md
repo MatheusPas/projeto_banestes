@@ -6,18 +6,21 @@ Sistema web desenvolvido em React + TypeScript para gerenciamento de clientes ba
 
 - **Lista Paginada**: Visualização organizada de todos os clientes cadastrados
 - **Busca Inteligente**: Filtro por nome, email ou CPF/CNPJ em tempo real
+- **Filtro por Agência**: Seleção específica de agência bancária
 - **Perfil Completo**: Detalhamento de dados pessoais, financeiros e bancários
 - **Gestão de Contas**: Visualização de contas correntes e poupanças
 - **Informações de Agência**: Dados completos das agências bancárias
 - **Interface Responsiva**: Otimizada para desktop, tablet e mobile
+- **Acessibilidade**: Suporte completo ao VLibras para deficientes auditivos
 
 ## Tecnologias
 
-- **React 18** - Framework JavaScript
-- **TypeScript** - Tipagem estática
+- **React 18** - Framework JavaScript moderno
+- **TypeScript** - Tipagem estática para maior segurança
 - **Tailwind CSS** - Framework de estilos utilitários
-- **Vite** - Build tool moderna
-- **Google Sheets API** - Fonte de dados externa
+- **Vite** - Build tool de alta performance
+- **Google Sheets API** - Integração com planilhas como fonte de dados
+- **VLibras** - Plugin de acessibilidade em Libras
 
 ## Estrutura do Projeto
 
@@ -40,7 +43,7 @@ src/
 ├── hooks/
 │   └── useDatas.ts                  # Hooks customizados para gerenciamento de estado
 ├── services/
-│   ├── api.ts                       # Serviço principal da API
+│   └── api.ts                       # Serviço principal da API Google Sheets
 ├── types/
 │   └── index.ts                     # Definições de tipos TypeScript
 ├── App.tsx                          # Componente raiz da aplicação
@@ -52,139 +55,222 @@ src/
 
 ### `ClientLista.tsx`
 Componente orquestrador principal que gerencia:
-- Carregamento assíncrono dos dados
+- Carregamento assíncrono dos dados de clientes e agências
 - Estado de loading e tratamento de erros
-- Sistema de filtros e busca
-- Paginação dos resultados
-- Navegação entre lista e detalhes
+- Sistema de filtros por texto e agência
+- Paginação dos resultados (10 clientes por página)
+- Navegação entre lista e detalhes com preservação de estado
 
 ### `ClientCard.tsx`
 Card interativo que apresenta:
-- Informações essenciais do cliente
-- Design responsivo e acessível
-- Navegação via clique ou teclado
-- Estados visuais de hover e focus
+- Informações essenciais do cliente (nome, nome social, email, CPF/CNPJ)
+- Design responsivo com hover effects
+- Navegação via clique ou teclado (Enter/Espaço)
+- Estados visuais para melhor UX
+
+### `ClientFiltro.tsx`
+Sistema de filtros avançado com:
+- Busca por nome, nome social ou CPF/CNPJ
+- Dropdown de seleção de agências
+- Botão de limpeza de filtros
+- Sincronização de estado com componente pai
 
 ### `ClientesDetalhes.tsx`
 Página completa de detalhamento com:
-- Dados pessoais e de contato
-- Informações financeiras (renda, patrimônio)
+- Dados pessoais completos (CPF, RG, data de nascimento, estado civil)
+- Informações de contato (email, endereço)
+- Dados financeiros (renda anual, patrimônio)
 - Lista dinâmica de contas bancárias
-- Dados da agência associada
-- Navegação de retorno à lista
+- Informações da agência associada
+- Navegação de retorno com preservação de filtros
 
 ### `ContaCard.tsx`
 Exibição formatada de contas com:
-- Tipo de conta (corrente/poupança)
-- Saldo atual e limites
-- Formatação monetária brasileira
-- Indicadores visuais de status
+- Identificação visual por tipo (corrente/poupança)
+- Saldo atual com cores baseadas no valor (positivo/negativo/zero)
+- Limite de crédito e crédito disponível
+- Cálculo do limite total disponível
+- Formatação monetária brasileira (BRL)
+
+### `AgenciaInfo.tsx`
+Informações da agência com:
+- Nome e código da agência
+- Endereço completo
+- Visual com gradiente temático
+
+### `Paginacao.tsx`
+Controles de navegação com:
+- Botões numéricos inteligentes (máximo 5 visíveis)
+- Navegação anterior/próximo
+- Informações de itens exibidos
+- Scroll automático ao topo
+- Estados de loading
 
 ## Hooks Customizados
 
 ### `useClientes()`
-- Gerenciamento de estado dos clientes
-- Carregamento assíncrono dos dados
-- Sistema de filtros com paginação local
-- Tratamento de erros e estados de loading
+Hook para gerenciamento de clientes:
+- Carregamento assíncrono de todos os clientes
+- Sistema de filtros com busca textual
+- Paginação local eficiente
+- Ordenação alfabética automática
+- Tratamento robusto de erros
 
 ### `useContas()`
-- Busca de contas por CPF/CNPJ do cliente
+Hook para gerenciamento de contas:
+- Busca de todas as contas do sistema
+- Filtragem por CPF/CNPJ do cliente
 - Estado de carregamento independente
-- Tratamento de erros específico
+- Cache inteligente de dados
 
 ### `useAgencias()`
-- Consulta de agências por código
-- Cache de dados para otimização
+Hook para gerenciamento de agências:
+- Consulta de todas as agências
+- Busca específica por código
+- Ordenação alfabética
 - Gerenciamento de estado assíncrono
 
 ## Integração com API
 
 ### `GoogleSheetsService`
-Classe que abstrai a comunicação com Google Sheets:
-- Parser robusto de CSV
-- Tratamento de diferentes formatos de data
-- Normalização de dados financeiros
+Classe principal que abstrai a comunicação com Google Sheets:
+
+#### Parser CSV Robusto
+- Tratamento correto de aspas e vírgulas
+- Suporte a campos com quebras de linha
+- Normalização de headers automática
+- Tratamento de caracteres especiais
+
+#### Processamento de Dados
+- Parser de datas brasileiras (dd/mm/yyyy)
+- Normalização de valores monetários
 - Mapeamento dinâmico de colunas
-- Tratamento de encoding de caracteres
+- Validação e sanitização de entrada
 
-### Estrutura de Dados
+#### Métodos Disponíveis
+- `buscarTodosClientes()` - Retorna todos os clientes
+- `buscarTodasContas()` - Retorna todas as contas
+- `buscarContasPorCliente(cpfCnpj)` - Contas de um cliente específico
+- `buscarTodasAgencias()` - Retorna todas as agências
+- `buscarAgenciaPorCodigo(codigo)` - Agência específica
 
+## Estrutura de Dados
+
+### Interface Cliente
 ```typescript
 interface Cliente {
-  id: string;
-  nome: string;
-  cpfCnpj: string;
-  rg?: string;
-  email: string;
-  endereco: string;
-  dataNascimento: Date;
-  nomeSocial?: string;
-  rendaAnual: number;
-  patrimonio: number;
+  id: string;                    // Identificador único
+  nome: string;                  // Nome completo
+  cpfCnpj: string;              // CPF ou CNPJ
+  rg?: string;                   // RG (opcional)
+  email: string;                 // Email de contato
+  endereco: string;              // Endereço completo
+  dataNascimento: Date;          // Data de nascimento
+  nomeSocial?: string;           // Nome social (opcional)
+  rendaAnual: number;            // Renda anual em reais
+  patrimonio: number;            // Patrimônio total em reais
   estadoCivil: "Solteiro" | "Casado" | "Viúvo" | "Divorciado";
-  codigoAgencia: number;
-}
-
-interface Conta {
-  id: string;
-  cpfCnpjCliente: string;
-  tipo: "corrente" | "poupanca";
-  saldo: number;
-  limiteCredito: number;
-  creditoDisponivel: number;
-}
-
-interface Agencia {
-  id: string;
-  codigo: number;
-  nome: string;
-  endereco: string;
+  codigoAgencia: number;         // Código da agência bancária
 }
 ```
+
+### Interface Conta
+```typescript
+interface Conta {
+  id: string;                    // Identificador único
+  cpfCnpjCliente: string;        // CPF/CNPJ do titular
+  tipo: "corrente" | "poupanca"; // Tipo da conta
+  saldo: number;                 // Saldo atual
+  limiteCredito: number;         // Limite de crédito
+  creditoDisponivel: number;     // Crédito ainda disponível
+}
+```
+
+### Interface Agencia
+```typescript
+interface Agencia {
+  id: string;                    // Identificador único
+  codigo: number;                // Código numérico da agência
+  nome: string;                  // Nome da agência
+  endereco: string;              // Endereço da agência
+}
+```
+
 ## Padrões de Design
 
 ### Responsividade
-- Grid system adaptativo (1-5 colunas)
-- Breakpoints do Tailwind CSS
-- Layout mobile-first
+- **Grid System**: 1-5 colunas adaptáveis baseado no breakpoint
+- **Mobile-first**: Design otimizado para dispositivos móveis
+- **Breakpoints**: Seguindo padrões do Tailwind CSS
+  - `sm:` - 640px+
+  - `md:` - 768px+
+  - `lg:` - 1024px+
+  - `xl:` - 1280px+
 
 ### Acessibilidade
-- Navegação por teclado completa
-- Labels e descrições adequadas
-- Estados de focus visíveis
-- Roles ARIA apropriados
+- **Navegação por teclado**: Suporte completo a Tab, Enter, Espaço
+- **ARIA Labels**: Descrições adequadas para leitores de tela
+- **Roles semânticos**: Estrutura HTML5 correta
+- **Contraste adequado**: Cores seguindo WCAG 2.1
+- **VLibras**: Plugin oficial para tradução em Libras
 
 ### UX/UI
-- Loading states em todas as operações
-- Feedback visual para ações do usuário
-- Tratamento consistente de erros
-- Design system baseado em cores semânticas
+- **Loading States**: Spinners e mensagens em todas operações assíncronas
+- **Error Handling**: Tratamento consistente com mensagens claras
+- **Visual Feedback**: Hover effects e transições suaves
+- **Design System**: Paleta de cores semânticas consistente
+- **Micro-interactions**: Animações sutis para melhor engajamento
 
 ## Funcionalidades Técnicas
 
 ### Performance
-- Paginação client-side para reduzir requests
-- Memoização de filtros com `useMemo`
-- Lazy loading de detalhes do cliente
-- Otimização de re-renders com `useCallback`
+- **Paginação Client-side**: Reduz requisições desnecessárias à API
+- **Memoização Inteligente**: `useMemo` para filtros complexos
+- **Lazy Loading**: Carregamento sob demanda de detalhes
+- **Otimização de Re-renders**: `useCallback` em handlers críticos
+- **Bundle Splitting**: Código dividido por funcionalidade
 
 ### Tratamento de Dados
-- Parser CSV robusto com suporte a aspas
-- Normalização de formatos de data brasileiros
-- Formatação automática de valores monetários
-- Sanitização de dados de entrada
+- **Parser CSV Robusto**: Suporte a aspas, vírgulas e caracteres especiais
+- **Normalização de Datas**: Múltiplos formatos brasileiros suportados
+- **Formatação Monetária**: Intl.NumberFormat para valores em BRL
+- **Sanitização de Entrada**: Limpeza automática de dados inconsistentes
+- **Validação de Tipos**: TypeScript garantindo tipagem correta
 
-### Estado Global
-- Gerenciamento via hooks customizados
-- Estado local para componentes específicos
-- Sincronização entre lista e detalhes
-- Cache inteligente de dados da API
+### Gerenciamento de Estado
+- **Hooks Customizados**: Encapsulamento de lógica complexa
+- **Estado Local**: Componentes gerenciam seu próprio estado
+- **Sincronização**: Estados compartilhados entre componentes relacionados
+- **Preservação de Filtros**: Mantém estado ao navegar entre páginas
+- **Error Boundaries**: Recuperação graceful de erros
 
-## Configuração
+#### 1. **clientes**
+Dados principais dos clientes com colunas:
+- id, nome, cpfCnpj, rg, email, endereco
+- dataNascimento, nomeSocial, rendaAnual, patrimonio
+- estadoCivil, codigoAgencia
 
-### Google Sheets
-O sistema está configurado para consumir dados de uma planilha específica com as seguintes abas:
-- `clientes` - Dados principais dos clientes
-- `contas` - Contas bancárias associadas
-- `agencias` - Informações das agências
+#### 2. **contas**
+Contas bancárias com colunas:
+- id, cpfCnpjCliente, tipo, saldo
+- limiteCredito, creditoDisponivel
+
+#### 3. **agencias**
+Informações das agências com colunas:
+- id, codigo, nome, endereco
+
+## 📱 Recursos de Acessibilidade
+
+### VLibras
+- **Plugin Oficial**: Integração com a ferramenta do governo brasileiro
+- **Tradução Automática**: Todo conteúdo traduzido para Libras
+- **Posicionamento Inteligente**: Widget não interfere na interface
+- **Ativação Opcional**: Usuário controla quando usar
+
+### Navegação Inclusiva
+- **Foco Visível**: Indicadores claros de elemento focado
+- **Ordem Lógica**: Tab order seguindo fluxo natural de leitura
+- **Shortcuts**: Atalhos de teclado para ações principais
+- **Descrições Contextuais**: ARIA labels descritivos
+
+Este sistema representa uma solução completa para gerenciamento de clientes bancários, priorizando experiência do usuário, acessibilidade e manutenibilidade do código.
